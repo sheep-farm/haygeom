@@ -1,0 +1,64 @@
+// Map of Rio Grande do Sul with multiple data layers from haygeobr
+// Demonstrating available spatial data layers
+
+import("sheep-farm/haygeom", as=geo)
+import("sheep-farm/haygeobr", as=geobr)
+
+// Available layers for RS from haygeobr:
+// - read_municipality: municípios (geometria apenas)
+// - read_quilombola_land: terras quilombolas
+// - read_indigenous_land: terras indígenas
+// - read_conservation_unit: unidades de conservação
+// - read_health_facilities: estabelecimentos de saúde
+// - read_schools: escolas
+// - read_metro_area: áreas metropolitanas
+// - read_meso_region: mesorregiões
+// - read_micro_region: microrregiões
+// - read_biomes: biomas
+// - read_census_tract: setores censitários
+// - read_urban_area: áreas urbanizadas
+// - read_municipal_seat: sedes municipais
+// - read_favelas: favelas
+// - read_neighborhood: bairros
+// - read_polling_place: locais de votação
+// - read_semi_arid: semiárido
+// - read_amazonia_legal: Amazônia Legal
+// - read_disaster_risk_area: áreas de risco de desastres
+// - read_health_region: regiões de saúde
+// - read_immediate_region: regiões imediatas
+// - read_intermediate_region: regiões intermediárias
+// - read_pop_arrangement: arranjos populacionais
+// - read_statistical_grid: grade estatística
+// - read_weighting_area: áreas de ponderação
+
+print("Loading RS municipalities...")
+let municipalities = geobr::read_municipality({"year": 2020})
+let rs = filter(municipalities, code_state == 43)
+print("RS municipalities:", nrow(rs))
+
+print("Loading quilombola lands...")
+let quilombolas = geobr::read_quilombola_land({"year": 2024})
+print("Total quilombola lands:", nrow(quilombolas))
+
+// Filter quilombolas for RS (code_state = 43)
+let rs_quilombolas = filter(quilombolas, code_state == 43)
+print("RS quilombola lands:", nrow(rs_quilombolas))
+
+// Create a map
+let map = geo::map(800, 800)
+
+// Add RS municipalities as base layer
+map = geo::add_layer(map, rs, {"fill": "#E0E0E0", "stroke": "#999999"})
+
+// Add quilombola lands if any exist in RS
+if nrow(rs_quilombolas) > 0 {
+    map = geo::add_layer(map, rs_quilombolas, {"fill": "#8B4513", "stroke": "#654321"})
+    print("Added quilombola lands layer")
+} else {
+    print("No quilombola lands found in RS")
+}
+
+// Render to SVG
+let svg = geo::render(map)
+write(svg, "map_rs_quilombolas.svg")
+print("RS map with quilombola lands saved to 'map_rs_quilombolas.svg'")

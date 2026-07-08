@@ -1,0 +1,35 @@
+// Map of Rio Grande do Sul (RS) municipalities with Pelotas highlighted
+// Note: haygeobr must be installed first via: hay install sheep-farm/haygeobr
+
+import("sheep-farm/haygeom", as=geo)
+import("sheep-farm/haygeobr", as=geobr)
+
+// Load all Brazilian municipalities (2020)
+let municipalities = geobr::read_municipality({"year": 2020})
+print("Total municipalities loaded:", nrow(municipalities))
+
+// Filter for RS (code_state = 43)
+let rs_municipalities = filter(municipalities, code_state == 43)
+print("RS municipalities:", nrow(rs_municipalities))
+
+// Filter for Pelotas (code_muni = 4314407)
+let pelotas = filter(rs_municipalities, code_muni == 4314407)
+print("Pelotas:", nrow(pelotas))
+
+// Filter RS municipalities excluding Pelotas
+let rs_without_pelotas = filter(rs_municipalities, code_muni != 4314407)
+print("RS without Pelotas:", nrow(rs_without_pelotas))
+
+// Create a map
+let map = geo::map(800, 800)
+
+// Add RS municipalities layer (without Pelotas) in light gray
+map = geo::add_layer(map, rs_without_pelotas, {"fill": "#E0E0E0", "stroke": "#999999"})
+
+// Add Pelotas layer in light green highlight
+map = geo::add_layer(map, pelotas, {"fill": "#90EE90", "stroke": "#228B22"})
+
+// Render to SVG
+let svg = geo::render(map)
+write(svg, "map_rs_municipalities_pelotas.svg")
+print("RS municipalities map with Pelotas highlighted saved to 'map_rs_municipalities_pelotas.svg'!")

@@ -1,0 +1,20 @@
+// Map of all Brazilian municipalities using haygeom
+// Note: haygeobr must be installed first via: hay install sheep-farm/haygeobr
+
+import("sheep-farm/haygeom", as=geo)
+import("sheep-farm/haygeobr", as=geobr)
+
+// Load all Brazilian municipalities (2020)
+let municipalities = geobr::read_municipality({"year": 2020})
+print("Loaded municipalities:", nrow(municipalities))
+
+// Create a map
+let map = geo::map(1200, 1000)
+
+// Add municipalities layer with light styling
+map = geo::add_layer(map, municipalities, {"fill": "#E0E0E0", "stroke": "#999999"})
+
+// Render to SVG
+let svg = geo::render(map)
+write(svg, "map_brazil_municipalities.svg")
+print("Brazil municipalities map saved to 'map_brazil_municipalities.svg'!")

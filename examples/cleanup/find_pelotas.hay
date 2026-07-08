@@ -1,0 +1,7 @@
+import("sheep-farm/haygeobr", as=geobr)
+
+// Try to find Pelotas by reading RS municipalities
+let municipalities = geobr::read_municipality({"year": 2020})
+let rs = filter(municipalities, code_state == 43)
+print("RS municipalities:", nrow(rs))
+print("Please check the dataset to find Pelotas code_muni")

@@ -1,0 +1,7 @@
+import("sheep-farm/haygeobr", as=geobr)
+
+let municipalities = geobr::read_municipality({"year": 2020})
+let rs = filter(municipalities, code_state == 43)
+print("RS municipalities:", nrow(rs))
+print("Checking for population data...")
+print(rs)

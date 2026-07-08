@@ -1,0 +1,27 @@
+// Map of Rio Grande do Sul with population arrangements
+import("sheep-farm/haygeom", as=geo)
+import("sheep-farm/haygeobr", as=geobr)
+
+print("Loading RS municipalities...")
+let municipalities = geobr::read_municipality({"year": 2020})
+let rs = filter(municipalities, code_state == 43)
+
+print("Loading population arrangements...")
+let pop_arr = geobr::read_pop_arrangement({"year": 2022})
+print("Total population arrangements:", nrow(pop_arr))
+
+// Filter for RS
+let rs_pop_arr = filter(pop_arr, code_state == 43)
+print("RS population arrangements:", nrow(rs_pop_arr))
+
+let map = geo::map(800, 800)
+map = geo::add_layer(map, rs, {"fill": "#E0E0E0", "stroke": "#999999"})
+
+if nrow(rs_pop_arr) > 0 {
+    map = geo::add_layer(map, rs_pop_arr, {"fill": "#4169E1", "stroke": "#00008B"})
+    print("Added population arrangements layer")
+}
+
+let svg = geo::render(map)
+write(svg, "map_rs_pop_arrangement.svg")
+print("RS map with population arrangements saved")

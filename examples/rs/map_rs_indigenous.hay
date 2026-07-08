@@ -1,0 +1,24 @@
+// Map of Rio Grande do Sul with indigenous lands
+import("sheep-farm/haygeom", as=geo)
+import("sheep-farm/haygeobr", as=geobr)
+
+print("Loading RS municipalities...")
+let municipalities = geobr::read_municipality({"year": 2020})
+let rs = filter(municipalities, code_state == 43)
+
+print("Loading indigenous lands...")
+let indigenous = geobr::read_indigenous_land({"year": 2022})
+let rs_indigenous = filter(indigenous, code_state == 43)
+print("RS indigenous lands:", nrow(rs_indigenous))
+
+let map = geo::map(800, 800)
+map = geo::add_layer(map, rs, {"fill": "#E0E0E0", "stroke": "#999999"})
+
+if nrow(rs_indigenous) > 0 {
+    map = geo::add_layer(map, rs_indigenous, {"fill": "#228B22", "stroke": "#006400"})
+    print("Added indigenous lands layer")
+}
+
+let svg = geo::render(map)
+write(svg, "map_rs_indigenous.svg")
+print("RS map with indigenous lands saved")

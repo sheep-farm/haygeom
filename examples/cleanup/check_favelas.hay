@@ -1,0 +1,7 @@
+import("sheep-farm/haygeobr", as=geobr)
+
+print("Loading favelas data...")
+let favelas = geobr::read_favelas({"year": 2024})
+print("Total favelas:", nrow(favelas))
+print("Favelas data:")
+print(favelas)

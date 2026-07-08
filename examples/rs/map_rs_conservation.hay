@@ -1,0 +1,20 @@
+// Map of Rio Grande do Sul with conservation units
+import("sheep-farm/haygeom", as=geo)
+import("sheep-farm/haygeobr", as=geobr)
+
+print("Loading RS municipalities...")
+let municipalities = geobr::read_municipality({"year": 2020})
+let rs = filter(municipalities, code_state == 43)
+
+print("Loading conservation units...")
+let conservation = geobr::read_conservation_unit({"year": 202503})
+print("Total conservation units:", nrow(conservation))
+// Add all conservation units (need to check columns for filtering)
+let map = geo::map(800, 800)
+map = geo::add_layer(map, rs, {"fill": "#E0E0E0", "stroke": "#999999"})
+map = geo::add_layer(map, conservation, {"fill": "#32CD32", "stroke": "#228B22"})
+print("Added all conservation units layer")
+
+let svg = geo::render(map)
+write(svg, "map_rs_conservation.svg")
+print("RS map with conservation units saved")
