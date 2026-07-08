@@ -10,3 +10,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 hayashi-plugin-sdk = { git = "https://github.com/sheep-farm/hayashi-plugin-sdk.git", branch = "main" }
+serde_json = "1.0"

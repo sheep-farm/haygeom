@@ -1,0 +1,4 @@
+import("sheep-farm/haygeom", as=geo)
+
+let map = geo::map(800, 600)
+print(map)

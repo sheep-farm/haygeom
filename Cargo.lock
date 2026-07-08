@@ -390,6 +390,7 @@ name = "haygeom"
 version = "0.1.0"
 dependencies = [
  "hayashi-plugin-sdk",
+ "serde_json",
 ]
 
 [[package]]

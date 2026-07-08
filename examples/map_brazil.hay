@@ -1,10 +1,19 @@
-// Simple map example using haygeom
+// Map of Brazilian states using haygeom
+// Note: haygeobr must be installed first via: hay install sheep-farm/haygeobr
+
 import("sheep-farm/haygeom", as=geo)
+import("sheep-farm/haygeobr", as=geobr)
+
+// Load Brazilian states data (2020)
+let states = geobr::read_state({"year": 2020})
 
 // Create a map
 let map = geo::map(800, 600)
 
-// For now, this is a placeholder
-// Full implementation will integrate with haygeobr
+// Add states layer
+map = geo::add_layer(map, states, {"fill": "#2D3E50", "stroke": "#5D7B9D"})
+
+// Render to SVG
 let svg = geo::render(map)
-print(svg)
+write(svg, "map_brazil_states.svg")
+print("Brazil states map saved to 'map_brazil_states.svg'!")

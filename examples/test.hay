@@ -1,0 +1,19 @@
+import("sheep-farm/haygeom", as=geo)
+import("sheep-farm/haygeobr", as=geobr)
+
+let states = geobr::read_state({"year": 2020})
+print("States loaded")
+
+let map = geo::map(800, 600)
+print("Map created")
+
+let opts = {"fill": "#2D3E50", "stroke": "#5D7B9D"}
+print("Options created")
+
+map = geo::add_layer(map, states, opts)
+print("Layer added")
+
+let svg = geo::render(map)
+print("Rendered")
+write(svg, "test.svg")
+print("Saved")

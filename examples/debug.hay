@@ -1,0 +1,5 @@
+import("sheep-farm/haygeobr", as=geo)
+
+let states = geo::read_state({"year": 2020})
+print("Rows:", nrow(states))
+print(states)
