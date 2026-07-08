@@ -39,24 +39,20 @@ jobs:
       - name: Build release binary
         run: cargo build --release --target ${{ matrix.target }}
 
-      - name: Rename and prepare asset
-        shell: bash
-        run: |
-          mkdir -p dist
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            cp target/${{ matrix.target }}/release/haygeom.dll \
-               dist/haygeom-${{ matrix.target }}.dll
-          else
-            cp target/${{ matrix.target }}/release/libhaygeom.${{ matrix.ext }} \
-               dist/haygeom-${{ matrix.target }}.${{ matrix.ext }}
-          fi
+      - name: Package (Unix)
+        if: runner.os != 'Windows'
+        run: tar czf haygeom-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release libhaygeom.${{ matrix.ext }}
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path target/${{ matrix.target }}/release/haygeom.dll -DestinationPath haygeom-${{ matrix.target }}.zip
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v1
         with:
-          subject-path: dist/haygeom-${{ matrix.target }}.${{ matrix.ext }}
+          subject-path: haygeom-${{ matrix.target }}.*
 
       - name: Upload binaries to Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/haygeom-${{ matrix.target }}.${{ matrix.ext }}
+          files: haygeom-${{ matrix.target }}.*
