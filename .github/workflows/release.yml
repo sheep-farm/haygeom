@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    name: Build & Attest Plugin
+    name: Build Plugin
     strategy:
       matrix:
         include:
@@ -23,9 +23,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     permissions:
-      id-token: write
       contents: write
-      attestations: write
 
     steps:
       - name: Checkout repository
@@ -46,11 +44,6 @@ jobs:
       - name: Package (Windows)
         if: runner.os == 'Windows'
         run: Compress-Archive -Path target/${{ matrix.target }}/release/haygeom.dll -DestinationPath haygeom-${{ matrix.target }}.zip
-
-      - name: Attest build provenance
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-path: haygeom-${{ matrix.target }}.*
 
       - name: Upload binaries to Release
         uses: softprops/action-gh-release@v2
