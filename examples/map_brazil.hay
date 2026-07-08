@@ -1,0 +1,10 @@
+// Simple map example using haygeom
+import("sheep-farm/haygeom", as=geo)
+
+// Create a map
+let map = geo::map(800, 600)
+
+// For now, this is a placeholder
+// Full implementation will integrate with haygeobr
+let svg = geo::render(map)
+print(svg)
