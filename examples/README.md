@@ -1,85 +1,85 @@
 # haygeom Examples
 
-Exemplos de uso do plugin haygeom para criação de mapas geográficos.
+Examples of using the haygeom plugin for creating geographic maps.
 
-## Organização
+## Organization
 
 ### basic/
-Exemplos básicos para testar a funcionalidade do plugin:
-- `simple.hay` - Criação básica de um mapa
-- `test.hay` - Teste de renderização com dados do haygeobr
-- `debug.hay` - Debug de problemas
+Basic examples to test plugin functionality:
+- `simple.hay` - Basic map creation
+- `test.hay` - Rendering test with haygeobr data
+- `debug.hay` - Debug issues
 
 ### brazil/
-Mapas do Brasil:
-- `map_brazil.hay` - Mapa dos estados brasileiros
-- `map_brazil_municipalities.hay` - Mapa de todos os municípios do Brasil (5.570 municípios)
+Brazil maps:
+- `map_brazil.hay` - Map of Brazilian states
+- `map_brazil_municipalities.hay` - Map of all Brazilian municipalities (5,570 municipalities)
 
 ### rs/
-Mapas do Rio Grande do Sul com diferentes camadas de dados do haygeobr:
-- `map_rs_municipalities.hay` - Mapa dos 497 municípios do RS
-- `map_rs_municipalities_pelotas.hay` - Municípios do RS com Pelotas destacada
-- `map_rs_quilombolas.hay` - 27 terras quilombolas no RS
-- `map_rs_indigenous.hay` - 21 terras indígenas no RS
-- `map_rs_favelas.hay` - 481 favelas/comunidades urbanas no RS
-- `map_rs_pop_arrangement.hay` - 106 arranjos populacionais no RS
+Rio Grande do Sul maps with various haygeobr data layers:
+- `map_rs_municipalities.hay` - Map of 497 RS municipalities
+- `map_rs_municipalities_pelotas.hay` - RS municipalities with Pelotas highlighted
+- `map_rs_quilombolas.hay` - 27 quilombola lands in RS
+- `map_rs_indigenous.hay` - 21 indigenous lands in RS
+- `map_rs_favelas.hay` - 481 favelas/urban communities in RS
+- `map_rs_pop_arrangement.hay` - 106 population arrangements in RS
 
 ### cleanup/
-Scripts temporários para verificação de dados:
-- `check_favelas.hay` - Verificação de dados de favelas
-- `check_population.hay` - Verificação de dados de população
-- `find_pelotas.hay` - Busca de código IBGE de Pelotas
+Temporary scripts for data verification:
+- `check_favelas.hay` - Favelas data verification
+- `check_population.hay` - Population data verification
+- `find_pelotas.hay` - Search for Pelotas IBGE code
 
-## Executando os exemplos
+## Running the examples
 
 ```bash
-# Navegue para o diretório do exemplo
+# Navigate to the example directory
 cd examples/brazil
 
-# Execute o script
+# Run the script
 hay map_brazil.hay
 ```
 
-## Camadas disponíveis no haygeobr
+## Available haygeobr layers
 
-O haygeobr fornece as seguintes camadas de dados espaciais:
+haygeobr provides the following spatial data layers:
 
-1. **Geografia Administrativa**
-   - `read_country` - Brasil
-   - `read_state` - Estados
-   - `read_municipality` - Municípios
-   - `read_region` - Regiões (N, NE, SE, S, CO)
-   - `read_meso_region` - Mesorregiões
-   - `read_micro_region` - Microrregiões
+1. **Administrative Geography**
+   - `read_country` - Brazil
+   - `read_state` - States
+   - `read_municipality` - Municipalities
+   - `read_region` - Regions (N, NE, SE, S, CO)
+   - `read_meso_region` - Mesoregions
+   - `read_micro_region` - Microregions
 
-2. **Terras Especiais**
-   - `read_indigenous_land` - Terras indígenas
-   - `read_quilombola_land` - Terras quilombolas
-   - `read_conservation_unit` - Unidades de conservação
+2. **Special Lands**
+   - `read_indigenous_land` - Indigenous lands
+   - `read_quilombola_land` - Quilombola lands
+   - `read_conservation_unit` - Conservation units
 
-3. **Urbano e Infraestrutura**
-   - `read_favelas` - Favelas e comunidades urbanas
-   - `read_neighborhood` - Bairros
-   - `read_urban_area` - Áreas urbanizadas
-   - `read_municipal_seat` - Sedes municipais
-   - `read_metro_area` - Áreas metropolitanas
-   - `read_pop_arrangement` - Arranjos populacionais
+3. **Urban and Infrastructure**
+   - `read_favelas` - Favelas and urban communities
+   - `read_neighborhood` - Neighborhoods
+   - `read_urban_area` - Urbanized areas
+   - `read_municipal_seat` - Municipal seats
+   - `read_metro_area` - Metropolitan areas
+   - `read_pop_arrangement` - Population arrangements
 
-4. **Saúde e Educação**
-   - `read_health_facilities` - Estabelecimentos de saúde
-   - `read_health_region` - Regiões de saúde
-   - `read_schools` - Escolas
+4. **Health and Education**
+   - `read_health_facilities` - Health facilities
+   - `read_health_region` - Health regions
+   - `read_schools` - Schools
 
-5. **Outros**
-   - `read_biomes` - Biomas
-   - `read_census_tract` - Setores censitários
-   - `read_polling_place` - Locais de votação
-   - `read_semi_arid` - Semiárido
-   - `read_amazonia_legal` - Amazônia Legal
-   - `read_disaster_risk_area` - Áreas de risco de desastres
-   - `read_immediate_region` - Regiões imediatas
-   - `read_intermediate_region` - Regiões intermediárias
-   - `read_statistical_grid` - Grade estatística
-   - `read_weighting_area` - Áreas de ponderação
+5. **Other**
+   - `read_biomes` - Biomes
+   - `read_census_tract` - Census tracts
+   - `read_polling_place` - Polling places
+   - `read_semi_arid` - Semiarid
+   - `read_amazonia_legal` - Legal Amazon
+   - `read_disaster_risk_area` - Disaster risk areas
+   - `read_immediate_region` - Immediate regions
+   - `read_intermediate_region` - Intermediate regions
+   - `read_statistical_grid` - Statistical grid
+   - `read_weighting_area` - Weighting areas
 
-**Nota:** O haygeobr fornece apenas dados geográficos (geometrias), não dados de população, PIB, IDH, etc. Para colorir por variáveis socioeconômicas, seria necessário integrar dados de outras fontes (IBGE SIDRA, IPEA, etc.).
+**Note:** haygeobr provides only geographic data (geometries), not population, GDP, HDI, etc. To color by socioeconomic variables, you would need to integrate data from other sources (IBGE SIDRA, IPEA, etc.).
