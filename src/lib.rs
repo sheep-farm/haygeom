@@ -5,7 +5,7 @@
 //! Supports multiple layers (polygons, points, lines) with independent styling.
 
 use hayashi_plugin_sdk::arrow::array::{Array, ArrayRef, StructArray};
-use hayashi_plugin_sdk::value::HayashiValue;
+use hayashi_plugin_sdk::value::{Geometry, HayashiValue, Plot};
 use hayashi_plugin_sdk::{hayashi_fn, hayashi_plugin};
 use std::collections::HashMap;
 
@@ -119,9 +119,10 @@ pub fn add_layer(
     map
 }
 
-/// Render the map to SVG
+/// Render the map to SVG.
+/// Returns a `Plot` composable — o host decide como renderizar (arquivo, terminal, browser).
 #[hayashi_fn]
-pub fn render(map: HashMap<String, HayashiValue>) -> String {
+pub fn render(map: HashMap<String, HayashiValue>) -> Plot {
     use wkt::{compute_bounds, geometry_to_svg_path, parse_wkt};
 
     let width = map
@@ -222,7 +223,7 @@ pub fn render(map: HashMap<String, HayashiValue>) -> String {
             svg, background
         );
         svg.push_str("</svg>");
-        return svg;
+        return Plot::plotters_svg(svg);
     }
 
     // Compute overall bounds
@@ -263,7 +264,7 @@ pub fn render(map: HashMap<String, HayashiValue>) -> String {
 
     svg.push_str("</svg>");
 
-    svg
+    Plot::plotters_svg(svg)
 }
 
 #[cfg(test)]
