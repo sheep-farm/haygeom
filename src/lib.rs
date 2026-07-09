@@ -1,3 +1,4 @@
+#![allow(clippy::not_unsafe_ptr_arg_deref)]
 //! haygeom - Geographic mapping plugin for Hayashi
 //!
 //! Provides functionality for rendering geographic maps from WKT geometry data.
@@ -17,7 +18,7 @@ mod wkt;
 
 /// Create a new map with specified dimensions
 #[hayashi_fn]
-fn map(
+pub fn map(
     width: f64,
     height: f64
 ) -> HashMap<String, HayashiValue> {
@@ -32,7 +33,7 @@ fn map(
 
 /// Add a layer to the map
 #[hayashi_fn]
-fn add_layer(
+pub fn add_layer(
     mut map: HashMap<String, HayashiValue>,
     data: ArrayRef,
     options: HashMap<String, HayashiValue>
@@ -93,7 +94,7 @@ fn add_layer(
             HayashiValue::List(l) => Some(l.clone()),
             _ => None,
         })
-        .unwrap_or_else(|| vec![]);
+        .unwrap_or_default();
 
     let mut layer_dict = HashMap::new();
     layer_dict.insert("fill".to_string(), HayashiValue::Str(fill.clone()));
@@ -117,7 +118,7 @@ fn add_layer(
 
 /// Render the map to SVG
 #[hayashi_fn]
-fn render(
+pub fn render(
     map: HashMap<String, HayashiValue>
 ) -> String {
     use wkt::{parse_wkt, geometry_to_svg_path, compute_bounds};
@@ -206,10 +207,7 @@ fn render(
     }
 
     // Compute overall bounds
-    let bounds = match compute_bounds(&all_geometries) {
-        Some(b) => b,
-        None => (0.0, 0.0, 10.0, 10.0),
-    };
+    let bounds = compute_bounds(&all_geometries).unwrap_or((0.0, 0.0, 10.0, 10.0));
 
     let padding = 0.0;
 
@@ -237,6 +235,101 @@ fn render(
     svg.push_str("</svg>");
 
     svg
+}
+
+#[cfg(test)]
+mod tests {
+    use super::wkt::{parse_wkt, compute_bounds};
+
+    // ── parse_wkt ─────────────────────────────────────────────────────────────
+
+    #[test]
+    fn test_parse_wkt_point() {
+        let g = parse_wkt("POINT(-43.5 -22.9)").unwrap();
+        match g {
+            super::wkt::Geometry::Point(x, y) => {
+                assert!((x - (-43.5)).abs() < 1e-9);
+                assert!((y - (-22.9)).abs() < 1e-9);
+            }
+            _ => panic!("esperado Point"),
+        }
+    }
+
+    #[test]
+    fn test_parse_wkt_linestring() {
+        let g = parse_wkt("LINESTRING(0 0, 1 1, 2 0)").unwrap();
+        match g {
+            super::wkt::Geometry::LineString(pts) => {
+                assert_eq!(pts.len(), 3);
+                assert_eq!(pts[0], (0.0, 0.0));
+                assert_eq!(pts[2], (2.0, 0.0));
+            }
+            _ => panic!("esperado LineString"),
+        }
+    }
+
+    #[test]
+    fn test_parse_wkt_polygon() {
+        let wkt = "POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))";
+        let g = parse_wkt(wkt).unwrap();
+        match g {
+            super::wkt::Geometry::Polygon(rings) => {
+                assert_eq!(rings.len(), 1);
+                assert_eq!(rings[0].len(), 5);
+            }
+            _ => panic!("esperado Polygon"),
+        }
+    }
+
+    #[test]
+    fn test_parse_wkt_empty_string() {
+        assert!(parse_wkt("").is_err());
+    }
+
+    #[test]
+    fn test_parse_wkt_invalid() {
+        assert!(parse_wkt("NOTAGEOMETRY(0 0)").is_err());
+    }
+
+    // ── compute_bounds ────────────────────────────────────────────────────────
+
+    #[test]
+    fn test_compute_bounds_point() {
+        let g = parse_wkt("POINT(10.0 20.0)").unwrap();
+        let b = compute_bounds(&[g]).unwrap();
+        assert_eq!(b, (10.0, 20.0, 10.0, 20.0));
+    }
+
+    #[test]
+    fn test_compute_bounds_multipoint() {
+        let g1 = parse_wkt("POINT(0 0)").unwrap();
+        let g2 = parse_wkt("POINT(5 -3)").unwrap();
+        let b = compute_bounds(&[g1, g2]).unwrap();
+        // min_x=0, min_y=-3, max_x=5, max_y=0
+        assert_eq!(b.0, 0.0);
+        assert_eq!(b.1, -3.0);
+        assert_eq!(b.2, 5.0);
+        assert_eq!(b.3, 0.0);
+    }
+
+    #[test]
+    fn test_compute_bounds_empty() {
+        assert_eq!(compute_bounds(&[]), None);
+    }
+
+    // ── __hayashi_impl_map ────────────────────────────────────────────────────
+
+    #[test]
+    fn test_map_creates_dict() {
+        use hayashi_plugin_sdk::value::HayashiValue;
+        let m = super::__hayashi_impl_map(800.0, 600.0);
+        assert_eq!(m.get("width"),  Some(&HayashiValue::Float(800.0)));
+        assert_eq!(m.get("height"), Some(&HayashiValue::Float(600.0)));
+        match m.get("layers") {
+            Some(HayashiValue::List(l)) => assert!(l.is_empty()),
+            _ => panic!("esperado layers = lista vazia"),
+        }
+    }
 }
 
 /// Extract a string column from an Arrow StructArray

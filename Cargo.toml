@@ -1,9 +1,10 @@
 [package]
 name = "haygeom"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Geographic mapping plugin for Hayashi"
 license = "MIT"
+repository = "https://github.com/sheep-farm/haygeom"
 
 [lib]
 crate-type = ["cdylib"]
@@ -11,3 +12,9 @@ crate-type = ["cdylib"]
 [dependencies]
 hayashi-plugin-sdk = { git = "https://github.com/sheep-farm/hayashi-plugin-sdk.git", branch = "main" }
 serde_json = "1.0"
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = "symbols"
+panic = "abort"

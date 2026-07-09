@@ -8,6 +8,7 @@ use std::fmt::Write;
 
 /// A parsed WKT geometry.
 #[derive(Debug, Clone)]
+#[allow(dead_code, clippy::enum_variant_names)]
 pub enum Geometry {
     Point(f64, f64),
     MultiPoint(Vec<(f64, f64)>),
@@ -150,7 +151,8 @@ fn extract_nested_coords(wkt: &str) -> Result<Vec<Vec<(f64, f64)>>, String> {
 /// Extract double-nested coordinate lists (two levels of nesting).
 /// e.g. "MULTIPOLYGON (((0 0, 1 1, 0 0)), ((2 2, 3 3, 2 2)))"
 /// → [[[(0,0), (1,1), (0,0)]], [[(2,2), (3,3), (2,2)]]]
-fn extract_double_nested_coords(wkt: &str) -> Result<Vec<Vec<Vec<(f64, f64)>>>, String> {
+type DoubleNested = Vec<Vec<Vec<(f64, f64)>>>;
+fn extract_double_nested_coords(wkt: &str) -> Result<DoubleNested, String> {
     // Find the content between the first '(' and the matching last ')'
     let start = wkt.find('(')
         .ok_or("expected '(' in WKT")?;
